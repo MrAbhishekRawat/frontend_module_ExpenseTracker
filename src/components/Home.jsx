@@ -25,6 +25,8 @@ const Home = () => {
         </Link>
       )}
 
+      {isProfileCompleted && <p>Your profile is completed</p>}
+
       <nav>
         <ul>
           {!isLoggedIn && <Link to="/">Login</Link>}

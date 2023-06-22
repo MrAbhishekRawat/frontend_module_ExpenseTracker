@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import AuthContext from "../store/AuthContext";
-import axios  from "axios";
+import axios from "axios";
 
 const Profile = () => {
   const [fullName, setFullName] = useState("");
   const [photoURL, setPhotoURL] = useState("");
   const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const idToken = authCtx.token;
+      try {
+        const response = await axios.post(
+          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI`,
+          {
+            idToken: idToken,
+          }
+        );
+        const user = response.data.users[0];
+        setFullName(user.displayName);
+        setPhotoURL(user.photoUrl);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchUserData();
+  }, [authCtx.token]);
 
   const saveProfileHandler = async () => {
     const idToken = authCtx.token;
@@ -17,7 +38,7 @@ const Profile = () => {
           idToken: idToken,
           displayName: fullName,
           photoUrl: photoURL,
-          returnSecureToken	: true
+          returnSecureToken: true,
         }
       );
       console.log(response.data);
