@@ -25,7 +25,7 @@ const Home = () => {
         </Link>
       )}
 
-      {isProfileCompleted && <p>Your profile is completed</p>}
+      {isProfileCompleted && <Link><p>Your profile is completed. Go to </p></Link>}
 
       <nav>
         <ul>
