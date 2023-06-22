@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import AuthContext from "../store/AuthContext";
 
 const Home = () => {
@@ -8,6 +7,7 @@ const Home = () => {
   const authCtx = useContext(AuthContext);
 
   const isLoggedIn = authCtx.isLoggedIn;
+  const isProfileCompleted = authCtx.isProfileCompleted;
 
   const logoutHandler = () => {
     authCtx.logout();
@@ -15,19 +15,20 @@ const Home = () => {
   };
 
   return (
-    <div >
-        <h1>welcome to expense tracker </h1>
-      
-      <nav >
+    <div>
+      <h1>Welcome to the expense tracker</h1>
+
+      {!isProfileCompleted && (
+        <Link to="/profile">
+          <p>Your profile is not completed</p>
+          <p>Complete now</p>
+        </Link>
+      )}
+
+      <nav>
         <ul>
-          {!isLoggedIn && (
-            <Link to="/" >
-              Login
-            </Link>
-          )}
-          {isLoggedIn && (
-            <button onClick={logoutHandler}>Logout</button>
-          )}
+          {!isLoggedIn && <Link to="/">Login</Link>}
+          {isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
         </ul>
       </nav>
     </div>
