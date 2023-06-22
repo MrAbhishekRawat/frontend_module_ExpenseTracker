@@ -16,7 +16,7 @@ const Home = () => {
 
   return (
     <div >
-        <h1>welcome</h1>
+        <h1>welcome to expense tracker </h1>
       
       <nav >
         <ul>
