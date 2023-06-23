@@ -21,7 +21,6 @@ export const AuthContextProvider = (props) => {
   const [isProfileCompleted, setIsProfileCompleted] = useState(false);
   const [userProfileData, setUserProfileData] = useState({});
 
-  console.log(isProfileCompleted, userProfileData)
 
   const userIsLoggedIn = !!token;
 
@@ -64,7 +63,6 @@ export const AuthContextProvider = (props) => {
         setIsProfileCompleted(true);
       }
 
-      console.log(user);
     } catch (error) {
       console.log(error);
     }

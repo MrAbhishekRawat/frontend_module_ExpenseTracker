@@ -15,12 +15,6 @@ const Home = () => {
     navigate("/");
   };
 
-
-  
-
-
-  console.log(isProfileCompleted)
-
   return (
     <div>
       <h1>Welcome to the expense tracker</h1>
