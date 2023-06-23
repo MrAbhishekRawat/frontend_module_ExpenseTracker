@@ -6,6 +6,7 @@ import Home from "./components/Home";
 import Profile from "./components/ProfilePage";
 import Verification from "./components/Verification";
 import ExpenseTracker from "./components/ExpenseTracker";
+import { ItemProvider } from "./store/ItemContext";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -25,7 +26,7 @@ function App() {
         <Route path="/home" element={<Home isProfileCompleted={isProfileCompleted} />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/verification" element={<Verification />} />
-        <Route path="/expenseTracker" element={<ExpenseTracker />} />
+        <Route path="/expenseTracker" element={<ItemProvider><ExpenseTracker /></ItemProvider>} />
         <Route path="*" element={authCtx.isLoggedIn ? null : <Navigate to="/" replace />} />
       </Routes>
   );
