@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../store/AuthContext";
-import axios from "axios";
 
 const Home = () => {
 
@@ -25,9 +24,13 @@ const Home = () => {
   return (
     <div>
       <h1>Welcome to the expense tracker</h1>
-        <Link to="/profile">
+        {!isProfileCompleted && <Link to="/profile">
           <p>Your profile is not completed. Complete now.</p>  
-        </Link>
+        </Link>}
+
+        {isProfileCompleted && <Link to="/profile">
+          <p>Still Want to Update The Profile. Lets Go.</p>  
+        </Link>}
 
       {isProfileCompleted && (
         <Link to="/verification">
