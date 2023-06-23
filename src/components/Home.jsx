@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../store/AuthContext";
+import axios from "axios";
 
 const Home = () => {
+
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
 
@@ -14,18 +16,24 @@ const Home = () => {
     navigate("/");
   };
 
+
+  
+
+
+  console.log(isProfileCompleted)
+
   return (
     <div>
       <h1>Welcome to the expense tracker</h1>
-
-      {!isProfileCompleted && (
         <Link to="/profile">
-          <p>Your profile is not completed</p>
-          <p>Complete now</p>
+          <p>Your profile is not completed. Complete now.</p>  
+        </Link>
+
+      {isProfileCompleted && (
+        <Link to="/verification">
+          <p>Your profile is completed. Go to Verification</p>
         </Link>
       )}
-
-      {isProfileCompleted && <Link><p>Your profile is completed. Go to </p></Link>}
 
       <nav>
         <ul>

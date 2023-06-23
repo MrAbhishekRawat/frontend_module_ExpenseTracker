@@ -25,6 +25,8 @@ const LoginPage = () => {
     setIsLogin((prevState) => !prevState);
   };
 
+  
+
   const submitHandler = async (event) => {
     event.preventDefault();
     const enteredEmail = emailInputRef.current.value;
@@ -69,6 +71,7 @@ const LoginPage = () => {
           authCtx.login({
             token: data.idToken,
             userEmail: modifiedEmail,
+            isProfileCompleted: data.isProfileCompleted,
           });
           navigate("/home");
         } else {

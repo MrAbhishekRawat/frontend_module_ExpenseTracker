@@ -9,6 +9,7 @@ import Verification from "./components/Verification";
 function App() {
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
+  const isProfileCompleted = authCtx.isProfileCompleted;
 
   useEffect(() => {
     if (!authCtx.isLoggedIn) {
@@ -17,22 +18,14 @@ function App() {
   }, [authCtx.isLoggedIn, navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<LoginPage />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/verification" element={<Verification />} />
-      <Route
-        path="*"
-        element={
-          authCtx.isLoggedIn  ? (
-            <Navigate to="/home" replace />
-          ) : (
-            <Navigate to="/verification" replace />
-          )
-        }
-      />
-    </Routes>
+   
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<Home isProfileCompleted={isProfileCompleted} />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/verification" element={<Verification />} />
+        <Route path="*" element={authCtx.isLoggedIn ? null : <Navigate to="/" replace />} />
+      </Routes>
   );
 }
 

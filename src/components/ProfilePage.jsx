@@ -2,33 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useContext } from "react";
 import AuthContext from "../store/AuthContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const [fullName, setFullName] = useState("");
-  const [photoURL, setPhotoURL] = useState("");
   const authCtx = useContext(AuthContext);
+  const [fullName, setFullName] = useState(authCtx.userProfileData.displayName || "");
+  const [photoURL, setPhotoURL] = useState(authCtx.userProfileData.photoUrl || "");
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const idToken = authCtx.token;
-      try {
-        const response = await axios.post(
-          `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI`,
-          {
-            idToken: idToken,
-          }
-        );
-        const user = response.data.users[0];
-        setFullName(user.displayName);
-        setPhotoURL(user.photoUrl);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const navigate= useNavigate();
 
-    fetchUserData();
-  }, [authCtx.token]);
+  function goToHome(){
+    navigate("/home")
+  }
 
+  
   const saveProfileHandler = async () => {
     const idToken = authCtx.token;
     try {
@@ -41,7 +28,7 @@ const Profile = () => {
           returnSecureToken: true,
         }
       );
-      console.log(response.data);
+      authCtx.updateProfileCompletion();
     } catch (error) {
       console.log(error);
     }
@@ -64,6 +51,7 @@ const Profile = () => {
         onChange={(event) => setPhotoURL(event.target.value)}
       />
       <button onClick={saveProfileHandler}>Update</button>
+      <button onClick={goToHome}>Go To Home</button>
     </div>
   );
 };
