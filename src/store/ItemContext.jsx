@@ -5,11 +5,15 @@ import AuthContext from "./AuthContext";
 const ItemContext = React.createContext({
   items: [],
   addItem: (newItem) => {},
+  editItem: {},
+  takeEditItem: (item) => {},
   removeItem: (itemId) => {},
+  editItemHandler: (itemId, updatedItem) => {},
 });
 
 export const ItemProvider = (props) => {
   const [items, setItems] = useState([]);
+  const [editItem, setEditItem] = useState({})
   const authCtx = useContext(AuthContext);
   const userEmail = authCtx.userEmail;
 
@@ -37,7 +41,7 @@ export const ItemProvider = (props) => {
     }
   }, [userEmail]);
 
-  const addItem = async (newItem) => {
+  const addItem = async (newItem, id) => {
     try {
       const response = await axios.post(
         `https://expensetrackerappm-a-r-default-rtdb.asia-southeast1.firebasedatabase.app/items/${userEmail}.json`,
@@ -45,7 +49,6 @@ export const ItemProvider = (props) => {
       );
       const createdItem = { id: response.data.name, ...newItem };
       setItems((prevItems) => [...prevItems, createdItem]);
-      console.log(createdItem);
     } catch (error) {
       console.log(error);
     }
@@ -62,10 +65,33 @@ export const ItemProvider = (props) => {
     }
   };
 
+  const editItemHandler = async (itemId, updatedItem) => {
+    try {
+      await axios.put(
+        `https://expensetrackerappm-a-r-default-rtdb.asia-southeast1.firebasedatabase.app/items/${userEmail}/${itemId}.json`,
+        updatedItem
+      );
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId ? { ...item, ...updatedItem } : item
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const takeEditItemHandler = item => {
+    setEditItem(item)
+  }
+
   const contextValue = {
     items: items,
     addItem: addItem,
+    editItem: editItem,
+    takeEditItem: takeEditItemHandler,
     removeItem: removeItem,
+    editItemHandler: editItemHandler,
   };
 
   return (
