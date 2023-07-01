@@ -1,26 +1,29 @@
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../store/AuthContext";
+import { login, updateProfileCompletion } from "../store/AuthRedux";
 import classes from "./LoginPage.module.css";
 import axios from "axios";
+import { createAccount, logIn } from "../store/AuthApi";
 
 const LoginPage = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
 
-  const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const authData = useSelector((state) => state.auth);
   useEffect(() => {
-    if (authCtx.isLoggedIn) {
+    if (authData.token) {
       navigate("/home");
     }
-  }, [authCtx.isLoggedIn, navigate]);
+  }, [authData.token, navigate]);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -48,6 +51,7 @@ const LoginPage = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
@@ -55,45 +59,35 @@ const LoginPage = () => {
       const enteredConfirmPassword = confirmPasswordInputRef.current.value;
       if (enteredPassword !== enteredConfirmPassword) {
         alert("Passwords do not match.");
+        setIsLoading(false)
         return;
       }
     }
-
-    setIsLoading(true);
-    let url;
     if (isLogin) {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI";
-    } else {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI";
-    }
-
-    try {
-      const response = await axios.post(url, {
+      const data = await logIn({
         email: enteredEmail,
         password: enteredPassword,
-        returnSecureToken: true,
       });
 
-      setIsLoading(false);
-      if (isLogin) {
-        const data = response.data;
-        const modifiedEmail = enteredEmail.replace(/[@.]/g, "-");
-        authCtx.login({
+      dispatch(updateProfileCompletion({
+        displayName: data.displayName, photoUrl: data.profilePicture
+      }))
+    
+      dispatch(
+        login({
           token: data.idToken,
-          userEmail: modifiedEmail,
-          isProfileCompleted: data.isProfileCompleted,
-        });
-        navigate("/home");
-      } else {
-        setIsLogin(true);
-      }
-    } catch (err) {
-      setIsLoading(false);
-      const errorMessage = err.response.data.error.message || "Authentication failed!";
-      alert(errorMessage);
+          userEmail: data.email,
+          userName: data.displayName,
+        })
+      );
+    } else {
+      const res = await createAccount({
+        email: enteredEmail,
+        password: enteredPassword,
+      });
+    
     }
+    setIsLoading(false);
   };
 
   return (

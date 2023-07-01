@@ -1,49 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthContext from "../store/AuthContext";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const Verification = () => {
+const Verification = ({
+  isLoggedIn,
+  isProfileCompleted,
+  token,
+  verifyEmail,
+}) => {
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const authCtx = useContext(AuthContext);
-  const navigate= useNavigate();
 
   useEffect(() => {
-    if (authCtx.isLoggedIn && authCtx.isProfileCompleted) {
+    if (isLoggedIn && isProfileCompleted) {
       checkEmailVerification();
     }
-  }, [authCtx.isLoggedIn, authCtx.isProfileCompleted]);
+  }, [isLoggedIn, isProfileCompleted]);
 
   const checkEmailVerification = async () => {
-    const idToken = authCtx.token;
     try {
-      const response = await axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI`,
-        {
-          idToken: idToken,
-        }
-      );
-      const user = response.data.users[0];
-      if (user.emailVerified) {
-        navigate("/home");
-      } else {
-        sendVerificationEmail();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const sendVerificationEmail = async () => {
-    const idToken = authCtx.token;
-    try {
-      await axios.post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyCUQkIpkp-AV5ksPj3lxbd94zq0PzufhHI`,
-        {
-          requestType: "VERIFY_EMAIL",
-          idToken: idToken,
-        }
-      );
+      await verifyEmail(token);
       setIsEmailSent(true);
     } catch (error) {
       console.log(error);
