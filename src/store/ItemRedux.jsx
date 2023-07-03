@@ -5,7 +5,8 @@ const itemSlice = createSlice({
   initialState: {
     items: [],
     editItem: {},
-    isPremium: false
+    isPremium: false,
+    
   },
   reducers: {
     setItems(state, action) {
@@ -33,6 +34,6 @@ const itemSlice = createSlice({
   },
 });
 
-export const { setItems, setEditItem, addItem, removeItem, updateItem , premiumHandler } =
+export const { setItems, setEditItem, addItem, removeItem, updateItem , premiumHandler} =
   itemSlice.actions;
 export default itemSlice.reducer;
