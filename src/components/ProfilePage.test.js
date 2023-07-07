@@ -14,6 +14,7 @@ jest.mock("../store/AuthApi", () => ({
   updateProfile: jest.fn(),
 }));
 
+
 describe("Profile component", () => {
   beforeEach(() => {
     useDispatch.mockClear();
